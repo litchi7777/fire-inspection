@@ -494,7 +494,7 @@ export const createInspectionEvent = async (
   await setDoc(docRef, {
     ...eventData,
     startDate: Timestamp.fromDate(eventData.startDate),
-    status: 'in_progress',
+    status: 'pending',
     deleted: false,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
