@@ -428,23 +428,24 @@ export const InspectionScreen = (): JSX.Element => {
     };
   };
 
-  const getPointColor = (point: InspectionPoint) => {
-    const { status } = getPointInspectionStatus(point.id);
-
-    if (mode === 'edit' && selectedPointForEdit === point.id) {
-      return 'blue'; // 編集中は青
-    }
-
-    switch (status) {
-      case 'ok':
-        return 'green'; // 正常は緑
-      case 'fail':
-        return 'red'; // 異常は赤
-      case 'uninspected':
-      default:
-        return 'gray'; // 未点検は灰色
-    }
-  };
+  // 点検ポイントの色を取得（現在未使用だが将来の拡張用）
+  // const getPointColor = (point: InspectionPoint) => {
+  //   const { status } = getPointInspectionStatus(point.id);
+  //
+  //   if (mode === 'edit' && selectedPointForEdit === point.id) {
+  //     return 'blue'; // 編集中は青
+  //   }
+  //
+  //   switch (status) {
+  //     case 'ok':
+  //       return 'green'; // 正常は緑
+  //     case 'fail':
+  //       return 'red'; // 異常は赤
+  //     case 'uninspected':
+  //     default:
+  //       return 'gray'; // 未点検は灰色
+  //   }
+  // };
 
   if (drawings.length === 0) {
     return (
@@ -598,7 +599,6 @@ export const InspectionScreen = (): JSX.Element => {
                       {/* 配置済みポイント表示 */}
                       {points.map((point) => {
                         const equipment = getEquipmentIcon(point.type);
-                        const pointColor = getPointColor(point);
                         const { hasConflict } = getPointInspectionStatus(point.id);
                         return (
                           <div
@@ -660,7 +660,7 @@ export const InspectionScreen = (): JSX.Element => {
                                     : 'hover:scale-110'
                                 }`}
                                 style={{
-                                  cursor: mode === 'inspect' ? 'pointer' : (selectedPointForEdit === point.id ? 'move' : 'pointer'),
+                                  cursor: mode === 'edit' ? (selectedPointForEdit === point.id ? 'move' : 'pointer') : 'pointer',
                                   userSelect: 'none',
                                   pointerEvents: 'none',
                                 }}
@@ -741,7 +741,6 @@ export const InspectionScreen = (): JSX.Element => {
                         {/* 配置済みポイント表示 */}
                         {points.map((point) => {
                           const equipment = getEquipmentIcon(point.type);
-                          const pointColor = getPointColor(point);
                           const { hasConflict } = getPointInspectionStatus(point.id);
                           return (
                             <div

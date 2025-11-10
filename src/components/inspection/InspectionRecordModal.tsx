@@ -48,9 +48,9 @@ export const InspectionRecordModal = ({
           // 最新のレコード（配列の最後の要素）を取得
           const latestRecord = result.records[result.records.length - 1];
 
-          // ステータスを復元
+          // ステータスを復元（uninspectedは除外）
           const latestStatus = latestRecord.itemResults[0]?.status;
-          if (latestStatus) {
+          if (latestStatus && latestStatus !== 'uninspected') {
             setStatus(latestStatus);
           }
 

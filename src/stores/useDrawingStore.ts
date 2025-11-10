@@ -11,6 +11,7 @@ import {
   deleteFile,
 } from '@/services/firebase/storage';
 import { convertPdfToPng } from '@/services/pdf/converter';
+import { useAuthStore } from './useAuthStore';
 
 interface DrawingState {
   drawings: Drawing[];
@@ -147,7 +148,8 @@ export const useDrawingStore = create<DrawingState>()((set, get) => ({
       }
 
       // Firestoreから削除
-      await deleteDrawing(projectId, drawingId);
+      const userId = useAuthStore.getState().user?.id || 'unknown';
+      await deleteDrawing(projectId, drawingId, userId);
 
       // 図面一覧を再取得
       await get().fetchDrawings(projectId);

@@ -488,7 +488,7 @@ export const getInspectionEvent = async (
  * 点検イベントを作成
  */
 export const createInspectionEvent = async (
-  eventData: Omit<InspectionEvent, 'id' | 'createdAt' | 'updatedAt' | 'deleted' | 'deletedAt' | 'deletedBy'>
+  eventData: Omit<InspectionEvent, 'id' | 'createdAt' | 'updatedAt' | 'deleted' | 'deletedAt' | 'deletedBy' | 'status'>
 ): Promise<string> => {
   const docRef = doc(collection(db, 'inspectionEvents'));
   await setDoc(docRef, {

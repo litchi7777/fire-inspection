@@ -34,6 +34,7 @@ export const ProjectCreate = (): JSX.Element => {
       const projectId = await createNewProject({
         ...formData,
         companyId: user.companyId,
+        deleted: false,
       });
       navigate(`/projects/${projectId}`);
     } catch (err) {

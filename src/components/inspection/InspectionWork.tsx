@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileImage } from 'lucide-react';
 import { useDrawingStore } from '@/stores/useDrawingStore';
@@ -15,9 +15,6 @@ export const InspectionWork = (): JSX.Element => {
   }>();
   const { drawings, fetchDrawings } = useDrawingStore();
   const { currentEvent, fetchEvent } = useInspectionEventStore();
-  const [selectedDrawingId, setSelectedDrawingId] = useState<string | null>(
-    null
-  );
 
   useEffect(() => {
     if (projectId && eventId) {
@@ -31,7 +28,6 @@ export const InspectionWork = (): JSX.Element => {
   };
 
   const handleDrawingSelect = (drawingId: string): void => {
-    setSelectedDrawingId(drawingId);
     // 図面ビューアに遷移（点検モード付き）
     navigate(
       `/projects/${projectId}/events/${eventId}/drawing/${drawingId}/inspect`

@@ -6,6 +6,7 @@ import {
   updateInspectionPoint,
   deleteInspectionPoint,
 } from '@/services/firebase/firestore';
+import { useAuthStore } from './useAuthStore';
 
 interface InspectionPointState {
   points: InspectionPoint[];
@@ -107,7 +108,8 @@ export const useInspectionPointStore = create<InspectionPointState>()(
     deletePoint: async (projectId, drawingId, pointId) => {
       set({ loading: true, error: null });
       try {
-        await deleteInspectionPoint(projectId, drawingId, pointId);
+        const userId = useAuthStore.getState().user?.id || 'unknown';
+        await deleteInspectionPoint(projectId, drawingId, pointId, userId);
 
         // 削除後、一覧から削除
         const points = get().points.filter((p) => p.id !== pointId);
