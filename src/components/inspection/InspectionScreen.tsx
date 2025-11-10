@@ -428,25 +428,6 @@ export const InspectionScreen = (): JSX.Element => {
     };
   };
 
-  // 点検ポイントの色を取得（現在未使用だが将来の拡張用）
-  // const getPointColor = (point: InspectionPoint) => {
-  //   const { status } = getPointInspectionStatus(point.id);
-  //
-  //   if (mode === 'edit' && selectedPointForEdit === point.id) {
-  //     return 'blue'; // 編集中は青
-  //   }
-  //
-  //   switch (status) {
-  //     case 'ok':
-  //       return 'green'; // 正常は緑
-  //     case 'fail':
-  //       return 'red'; // 異常は赤
-  //     case 'uninspected':
-  //     default:
-  //       return 'gray'; // 未点検は灰色
-  //   }
-  // };
-
   if (drawings.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
