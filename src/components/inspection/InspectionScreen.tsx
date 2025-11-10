@@ -27,6 +27,7 @@ import { isOnline } from '@/services/sync/syncService';
 import { Header } from '@/components/common/Header';
 import { InspectionRecordModal } from './InspectionRecordModal';
 import { EquipmentType, InspectionPoint, InspectionResult } from '@/types';
+import { EQUIPMENT_CATEGORIES, getCategoryById } from '@/utils/equipmentCategories';
 
 type Mode = 'edit' | 'inspect';
 
@@ -71,6 +72,7 @@ export const InspectionScreen = (): JSX.Element => {
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [mode, setMode] = useState<Mode>('inspect');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedEquipmentType, setSelectedEquipmentType] =
     useState<EquipmentType | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<InspectionPoint | null>(
@@ -520,32 +522,63 @@ export const InspectionScreen = (): JSX.Element => {
           </div>
         </div>
 
-        {/* 編集モード時の設備選択 */}
+        {/* 編集モード時の設備選択（2段階） */}
         {mode === 'edit' && (
-          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-2">
-            <span className="text-gray-300 text-sm whitespace-nowrap">
-              配置する設備（クリックまたはドラッグ）:
-            </span>
-            {equipmentTypes.map((equipment) => {
-              return (
+          <div className="mt-3 space-y-2">
+            {/* ステップ1: カテゴリー選択 */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              <span className="text-gray-300 text-sm whitespace-nowrap">
+                1. カテゴリー選択:
+              </span>
+              {EQUIPMENT_CATEGORIES.map((category) => (
                 <button
-                  key={equipment.type}
-                  draggable={true}
-                  onDragStart={(e) => handleDragStart(e, equipment.type)}
-                  onTouchStart={(e) => handleEquipmentTouchStart(e, equipment.type)}
-                  onTouchEnd={handleEquipmentTouchEnd}
-                  onClick={() => setSelectedEquipmentType(equipment.type)}
-                  className={`px-3 py-2 rounded flex items-center gap-2 whitespace-nowrap cursor-move ${
-                    selectedEquipmentType === equipment.type
-                      ? 'bg-orange-600 text-white'
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    setSelectedEquipmentType(null);
+                  }}
+                  className={`px-3 py-2 rounded flex items-center gap-2 whitespace-nowrap ${
+                    selectedCategory === category.id
+                      ? 'bg-blue-600 text-white'
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  <img src={equipment.iconPath} alt={equipment.label} className="w-6 h-6" />
-                  {equipment.label}
+                  <span className="text-xl">{category.icon}</span>
+                  {category.label.replace(/^[^\s]+\s/, '')}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* ステップ2: 設備選択 */}
+            {selectedCategory && (
+              <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                <span className="text-gray-300 text-sm whitespace-nowrap">
+                  2. 設備選択:
+                </span>
+                {getCategoryById(selectedCategory)?.equipmentTypes.map((type) => {
+                  const equipment = equipmentTypes.find((e) => e.type === type);
+                  if (!equipment) return null;
+                  return (
+                    <button
+                      key={equipment.type}
+                      draggable={true}
+                      onDragStart={(e) => handleDragStart(e, equipment.type)}
+                      onTouchStart={(e) => handleEquipmentTouchStart(e, equipment.type)}
+                      onTouchEnd={handleEquipmentTouchEnd}
+                      onClick={() => setSelectedEquipmentType(equipment.type)}
+                      className={`px-3 py-2 rounded flex items-center gap-2 whitespace-nowrap cursor-move ${
+                        selectedEquipmentType === equipment.type
+                          ? 'bg-orange-600 text-white'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      <img src={equipment.iconPath} alt={equipment.label} className="w-6 h-6" />
+                      {equipment.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>

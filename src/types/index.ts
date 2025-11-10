@@ -80,6 +80,15 @@ export type EquipmentType =
   | 'speaker'              // スピーカー
   | 'indicator';           // 表示灯
 
+export type EquipmentCategory = 'sensor' | 'control' | 'alarm' | 'fire_fighting' | 'evacuation';
+
+export interface EquipmentCategoryInfo {
+  id: EquipmentCategory;
+  label: string;
+  icon: string;
+  equipmentTypes: EquipmentType[];
+}
+
 export interface InspectionItem {
   itemName: string;
   required: boolean;
