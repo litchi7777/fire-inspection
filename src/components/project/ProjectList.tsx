@@ -18,6 +18,18 @@ export const ProjectList = (): JSX.Element => {
     }
   }, [user?.companyId]);
 
+  // 点検予定日でソート（近い順、未定は最後）
+  const sortedProjects = [...projects].sort((a, b) => {
+    // 両方とも未定の場合
+    if (!a.nextInspectionDate && !b.nextInspectionDate) return 0;
+    // aが未定の場合は後ろ
+    if (!a.nextInspectionDate) return 1;
+    // bが未定の場合は後ろ
+    if (!b.nextInspectionDate) return -1;
+    // 日付の昇順（近い順）
+    return new Date(a.nextInspectionDate).getTime() - new Date(b.nextInspectionDate).getTime();
+  });
+
   const handleLogout = async (): Promise<void> => {
     try {
       await logout();
@@ -141,6 +153,12 @@ export const ProjectList = (): JSX.Element => {
                     住所
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    最終点検日
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    次回点検予定日
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     作成日
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -149,7 +167,7 @@ export const ProjectList = (): JSX.Element => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {projects.map((project) => (
+                {sortedProjects.map((project) => (
                   <tr
                     key={project.id}
                     className="hover:bg-gray-50 transition-colors"
@@ -171,6 +189,30 @@ export const ProjectList = (): JSX.Element => {
                         <MapPin className="w-4 h-4 mt-0.5 text-gray-400 flex-shrink-0" />
                         <span className="text-sm text-gray-700">
                           {project.address}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">
+                          {project.lastInspectionDate
+                            ? format(new Date(project.lastInspectionDate), 'yyyy/MM/dd', {
+                                locale: ja,
+                              })
+                            : '未実施'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">
+                          {project.nextInspectionDate
+                            ? format(new Date(project.nextInspectionDate), 'yyyy/MM/dd', {
+                                locale: ja,
+                              })
+                            : '未定'}
                         </span>
                       </div>
                     </td>

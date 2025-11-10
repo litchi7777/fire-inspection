@@ -37,6 +37,8 @@ export interface Project {
   customerName: string;
   address: string;
   companyId: string;
+  nextInspectionDate?: Date; // 次回点検予定日
+  lastInspectionDate?: Date; // 最終点検日（完了した点検イベントの最新日）
   deleted: boolean;
   deletedAt?: Date;
   deletedBy?: string;
