@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ユーザードキュメント - 認証済みユーザーが自分のドキュメントを作成可能
+    match /users/{userId} {
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 会社ドキュメント - 認証済みユーザーが作成可能
+    match /companies/{companyId} {
+      allow create: if request.auth != null;
+      allow read, write: if request.auth != null;
+    }
+
+    // プロジェクトドキュメント
+    match /projects/{projectId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // 図面ドキュメント
+    match /projects/{projectId}/drawings/{drawingId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // 点検ポイントドキュメント
+    match /projects/{projectId}/drawings/{drawingId}/points/{pointId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

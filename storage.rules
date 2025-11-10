@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // プロジェクトの図面ファイル - 認証ユーザーのみアクセス可能
+    match /projects/{projectId}/drawings/{drawingId}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // 点検写真 - 認証ユーザーのみアクセス可能
+    match /projects/{projectId}/photos/{photoId}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // 音声ファイル - 認証ユーザーのみアクセス可能
+    match /projects/{projectId}/audio/{audioId}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
