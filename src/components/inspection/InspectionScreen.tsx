@@ -606,7 +606,7 @@ export const InspectionScreen = (): JSX.Element => {
                       {/* 配置済みポイント表示 */}
                       {points.map((point) => {
                         const equipment = getEquipmentIcon(point.type);
-                        const { hasConflict } = getPointInspectionStatus(point.id);
+                        const { status, hasConflict } = getPointInspectionStatus(point.id);
                         return (
                           <div
                             key={point.id}
@@ -679,6 +679,10 @@ export const InspectionScreen = (): JSX.Element => {
                                   style={{
                                     filter: mode === 'edit' && selectedPointForEdit === point.id
                                       ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))'
+                                      : status === 'ok'
+                                      ? 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.8)) brightness(1.2)'
+                                      : status === 'fail'
+                                      ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)) brightness(1.2)'
                                       : 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))'
                                   }}
                                 />
@@ -749,7 +753,7 @@ export const InspectionScreen = (): JSX.Element => {
                         {/* 配置済みポイント表示 */}
                         {points.map((point) => {
                           const equipment = getEquipmentIcon(point.type);
-                          const { hasConflict } = getPointInspectionStatus(point.id);
+                          const { status, hasConflict } = getPointInspectionStatus(point.id);
                           return (
                             <div
                               key={point.id}
@@ -773,7 +777,11 @@ export const InspectionScreen = (): JSX.Element => {
                                     alt={equipment.label}
                                     className="w-12 h-12 drop-shadow-lg"
                                     style={{
-                                      filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))'
+                                      filter: status === 'ok'
+                                        ? 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.8)) brightness(1.2)'
+                                        : status === 'fail'
+                                        ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)) brightness(1.2)'
+                                        : 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))'
                                     }}
                                   />
                                 </div>
