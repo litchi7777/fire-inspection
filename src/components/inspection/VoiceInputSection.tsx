@@ -1,7 +1,7 @@
 import { Mic, Loader2 } from 'lucide-react';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { transcribeAudio } from '@/services/gemini/audioTranscription';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface VoiceInputSectionProps {
   online: boolean;
@@ -14,36 +14,40 @@ export const VoiceInputButton = ({
 }: VoiceInputSectionProps): JSX.Element => {
   const [audioState, audioControls] = useAudioRecorder();
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [shouldTranscribe, setShouldTranscribe] = useState(false);
 
   const handleMouseDown = async () => {
-    if (!online || isTranscribing) return;
+    if (!online || isTranscribing || audioState.isRecording) return;
     await audioControls.startRecording();
   };
 
-  const handleMouseUp = async () => {
-    if (!audioState.isRecording) return;
-
-    audioControls.stopRecording();
-
-    // 録音完了後、自動的にテキスト化
-    // audioBlobが設定されるまで少し待つ
-    setTimeout(async () => {
-      const blob = audioState.audioBlob;
-      if (!blob) return;
-
-      setIsTranscribing(true);
-      try {
-        const text = await transcribeAudio(blob);
-        onTextTranscribed(text);
-        audioControls.clearRecording();
-      } catch (error) {
-        console.error('Transcription error:', error);
-        alert('音声のテキスト変換に失敗しました');
-      } finally {
-        setIsTranscribing(false);
-      }
-    }, 100);
+  const handleMouseUp = () => {
+    if (audioState.isRecording) {
+      audioControls.stopRecording();
+      setShouldTranscribe(true);
+    }
   };
+
+  // 録音完了後、audioBlobが設定されたら自動的にテキスト化
+  useEffect(() => {
+    if (shouldTranscribe && audioState.audioBlob && !audioState.isRecording) {
+      setShouldTranscribe(false);
+      setIsTranscribing(true);
+
+      transcribeAudio(audioState.audioBlob)
+        .then((text) => {
+          onTextTranscribed(text);
+          audioControls.clearRecording();
+        })
+        .catch((error) => {
+          console.error('Transcription error:', error);
+          alert('音声のテキスト変換に失敗しました');
+        })
+        .finally(() => {
+          setIsTranscribing(false);
+        });
+    }
+  }, [shouldTranscribe, audioState.audioBlob, audioState.isRecording, audioControls, onTextTranscribed]);
 
   const formatRecordingTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -75,8 +79,10 @@ export const VoiceInputButton = ({
     <button
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
       onTouchStart={handleMouseDown}
       onTouchEnd={handleMouseUp}
+      onTouchCancel={handleMouseUp}
       disabled={!online}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors touch-manipulation ${
         online
