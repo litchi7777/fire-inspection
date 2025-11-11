@@ -23,6 +23,11 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
     type: audioBlob.type,
   });
 
+  // サイズが小さすぎる場合は警告
+  if (audioBlob.size < 1000) {
+    console.warn('⚠️ 音声データのサイズが小さすぎます:', audioBlob.size, 'bytes');
+  }
+
   try {
     // Gemini 2.5 Flash を使用（マルチモーダル対応）
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
@@ -30,12 +35,17 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
     // BlobをBase64に変換
     console.log('📝 Base64変換開始...');
     const base64Audio = await blobToBase64(audioBlob);
-    console.log('✅ Base64変換完了 (長さ:', base64Audio.length, ')');
+    console.log('✅ Base64変換完了 (長さ:', base64Audio.length, 'chars)');
 
     // マルチモーダルプロンプト
-    const prompt = `音声をそのまま日本語に文字起こししてください。箇条書きや整形は不要です。話された内容をそのまま書き起こしてください。`;
+    const prompt = `Transcribe the audio to Japanese text. Output only what is spoken, nothing else.`;
 
-    console.log('🚀 Gemini APIリクエスト送信...');
+    console.log('🚀 Gemini APIリクエスト送信...', {
+      mimeType: audioBlob.type,
+      dataLength: base64Audio.length,
+      promptLength: prompt.length,
+    });
+
     const result = await model.generateContent([
       prompt,
       {
