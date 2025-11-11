@@ -96,7 +96,7 @@ export const useAudioRecorder = (): [AudioRecorderState, AudioRecorderControls] 
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsPaused(false);
-      setRecordingTime(0);
+      // 録音時間は保持する（録音完了表示で使用するため）
     }
   }, [isRecording]);
 
