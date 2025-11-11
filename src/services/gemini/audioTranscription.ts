@@ -20,7 +20,7 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
 
   try {
     // Gemini 1.5 Flash を使用（マルチモーダル対応）
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 
     // BlobをBase64に変換
     const base64Audio = await blobToBase64(audioBlob);
