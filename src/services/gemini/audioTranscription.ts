@@ -26,15 +26,7 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
     const base64Audio = await blobToBase64(audioBlob);
 
     // マルチモーダルプロンプト
-    const prompt = `以下の音声から、消防点検の記録として適切なテキストを抽出してください。
-
-要件:
-- 音声の内容をそのまま文字起こししてください
-- 点検結果（正常、異常など）や設備の状態について述べられている内容を正確に記録してください
-- 不要な言葉（えー、あのー、など）は除外してください
-- 簡潔で明瞭な日本語にしてください
-
-音声内容:`;
+    const prompt = `音声をそのまま日本語に文字起こししてください。箇条書きや整形は不要です。話された内容をそのまま書き起こしてください。`;
 
     const result = await model.generateContent([
       prompt,
