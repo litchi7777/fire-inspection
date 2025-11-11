@@ -680,9 +680,9 @@ export const InspectionScreen = (): JSX.Element => {
                                     filter: mode === 'edit' && selectedPointForEdit === point.id
                                       ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))'
                                       : status === 'ok'
-                                      ? 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.8)) brightness(1.2)'
+                                      ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 1)) brightness(1.3)'
                                       : status === 'fail'
-                                      ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)) brightness(1.2)'
+                                      ? 'drop-shadow(0 0 4px rgba(239, 68, 68, 1)) brightness(1.3)'
                                       : 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))'
                                   }}
                                 />
@@ -778,9 +778,9 @@ export const InspectionScreen = (): JSX.Element => {
                                     className="w-12 h-12 drop-shadow-lg"
                                     style={{
                                       filter: status === 'ok'
-                                        ? 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.8)) brightness(1.2)'
+                                        ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 1)) brightness(1.3)'
                                         : status === 'fail'
-                                        ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)) brightness(1.2)'
+                                        ? 'drop-shadow(0 0 4px rgba(239, 68, 68, 1)) brightness(1.3)'
                                         : 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))'
                                     }}
                                   />
