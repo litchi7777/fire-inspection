@@ -31,12 +31,12 @@ export const ProjectCreate = (): JSX.Element => {
     }
 
     try {
-      const projectId = await createNewProject({
+      await createNewProject({
         ...formData,
         companyId: user.companyId,
         deleted: false,
       });
-      navigate(`/projects/${projectId}`);
+      navigate('/projects');
     } catch (err) {
       console.error('Project creation failed:', err);
     }
