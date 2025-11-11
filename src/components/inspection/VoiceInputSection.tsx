@@ -25,24 +25,16 @@ export const VoiceInputSection = ({
 
   const handleTranscribe = async () => {
     if (!audioState.audioBlob) {
-      console.error('❌ audioBlobが存在しません');
       return;
     }
-
-    console.log('🎙️ 文字起こし開始:', {
-      blobSize: audioState.audioBlob.size,
-      blobType: audioState.audioBlob.type,
-      recordingTime: audioState.recordingTime,
-    });
 
     setIsTranscribing(true);
     try {
       const text = await transcribeAudio(audioState.audioBlob);
-      console.log('✅ 文字起こし完了、テキスト長:', text.length);
       onTextTranscribed(text);
       audioControls.clearRecording();
     } catch (error) {
-      console.error('❌ Transcription error:', error);
+      console.error('Transcription error:', error);
       alert('音声のテキスト変換に失敗しました');
     } finally {
       setIsTranscribing(false);
