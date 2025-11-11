@@ -704,6 +704,7 @@ export const InspectionScreen = (): JSX.Element => {
             minScale={0.5}
             maxScale={4}
             centerOnInit
+            wheel={{ disabled: true }}
           >
             {({ zoomIn, zoomOut, resetTransform }) => (
               <>
