@@ -18,16 +18,24 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
     throw new Error('Gemini API key is not configured');
   }
 
+  console.log('🎤 音声データ情報:', {
+    size: audioBlob.size,
+    type: audioBlob.type,
+  });
+
   try {
     // Gemini 2.5 Flash を使用（マルチモーダル対応）
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // BlobをBase64に変換
+    console.log('📝 Base64変換開始...');
     const base64Audio = await blobToBase64(audioBlob);
+    console.log('✅ Base64変換完了 (長さ:', base64Audio.length, ')');
 
     // マルチモーダルプロンプト
     const prompt = `音声をそのまま日本語に文字起こししてください。箇条書きや整形は不要です。話された内容をそのまま書き起こしてください。`;
 
+    console.log('🚀 Gemini APIリクエスト送信...');
     const result = await model.generateContent([
       prompt,
       {
@@ -38,12 +46,14 @@ export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
       },
     ]);
 
+    console.log('📥 Gemini APIレスポンス受信');
     const response = await result.response;
     const text = response.text();
 
+    console.log('✅ 文字起こし成功:', text);
     return text.trim();
   } catch (error) {
-    console.error('Audio transcription error:', error);
+    console.error('❌ Audio transcription error:', error);
     throw new Error('音声のテキスト変換に失敗しました');
   }
 };
