@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { InspectionPoint, EquipmentType } from '@/types';
+import { InspectionPoint, EquipmentType, IconSize } from '@/types';
 import {
   getInspectionPoints,
   createInspectionPoint,
@@ -23,6 +23,7 @@ interface InspectionPointState {
       y: number;
       type: EquipmentType;
       name: string;
+      size?: IconSize;
     }
   ) => Promise<string>;
   updatePoint: (

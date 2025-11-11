@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { X, CheckCircle, XCircle, Wifi, WifiOff } from 'lucide-react';
 import { InspectionPoint } from '@/types';
 import { isOnline } from '@/services/sync/syncService';
-import { VoiceInputSection } from './VoiceInputSection';
+import { VoiceInputButton } from './VoiceInputSection';
 import { PhotoCaptureSection } from './PhotoCaptureSection';
 import { InspectionHistorySection } from './InspectionHistorySection';
 import { useToast } from '@/hooks/useToast';
@@ -159,6 +159,8 @@ export const InspectionRecordModal = ({
                 </>
               )}
             </div>
+            {/* 音声入力ボタン */}
+            <VoiceInputButton online={online} onTextTranscribed={handleTextTranscribed} />
           </div>
           <button
             onClick={onClose}
@@ -227,14 +229,6 @@ export const InspectionRecordModal = ({
               className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="気になった点や詳細を記入してください"
             />
-          </div>
-
-          {/* 音声入力 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              音声入力
-            </label>
-            <VoiceInputSection online={online} onTextTranscribed={handleTextTranscribed} />
           </div>
 
           {/* 写真撮影 */}
