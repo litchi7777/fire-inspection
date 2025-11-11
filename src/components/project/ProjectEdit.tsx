@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Edit2, Save, X } from 'lucide-react';
+import { Edit2, Save, X, Trash2 } from 'lucide-react';
 import { useProjectStore } from '@/stores/useProjectStore';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale/ja';
@@ -15,10 +15,12 @@ export const ProjectEdit = (): JSX.Element => {
     error,
     fetchProject,
     updateProject,
+    deleteProject,
     clearError,
   } = useProjectStore();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [formData, setFormData] = useState({
     customerName: '',
     address: '',
@@ -70,6 +72,17 @@ export const ProjectEdit = (): JSX.Element => {
 
   const handleBack = (): void => {
     navigate('/projects');
+  };
+
+  const handleDelete = async (): Promise<void> => {
+    if (!projectId) return;
+
+    try {
+      await deleteProject(projectId);
+      navigate('/projects');
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
   };
 
   if (loading && !currentProject) {
@@ -229,8 +242,50 @@ export const ProjectEdit = (): JSX.Element => {
               </div>
             )}
           </div>
+
+          {/* 削除ボタン */}
+          {!isEditing && (
+            <div className="mt-6">
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-md transition-colors border border-red-200"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>この案件を削除</span>
+              </button>
+            </div>
+          )}
         </div>
       </main>
+
+      {/* 削除確認ダイアログ */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              案件を削除しますか？
+            </h3>
+            <p className="text-gray-600 mb-6">
+              この操作は取り消せません。この案件に関連するすべての図面、点検イベント、点検結果も削除されます。
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {loading ? '削除中...' : '削除する'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
